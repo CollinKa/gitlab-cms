@@ -1,13 +1,16 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Setting up a CMSSW environment"
+teaching: 10
+exercises: 5
 questions:
-- "Key question (FIXME)"
+- "Which GitLab runners are needed?"
+- "What's different w.r.t. LXPLUS"
 objectives:
-- "First learning objective. (FIXME)"
+- "Know how to source the CMSSW environment"
+- "Understand the different commands that need to be used"
 keypoints:
-- "First key point. Brief Answer to questions. (FIXME)"
+- "GitLab CVMFS runners are required to use CMSSW."
+- "The setup script sets aliases that can break the usual setup."
 ---
 FIXME
 

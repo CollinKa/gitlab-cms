@@ -47,3 +47,4 @@
 [training]: https://carpentries.github.io/instructor-training/
 [workshop-repo]: {{ site.workshop_repo }}
 [yaml]: http://yaml.org/
+[cmssw]: https://cms-sw.github.io/index.html
