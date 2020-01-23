@@ -48,3 +48,5 @@
 [workshop-repo]: {{ site.workshop_repo }}
 [yaml]: http://yaml.org/
 [cmssw]: https://cms-sw.github.io/index.html
+[snow-git]: https://cern.service-now.com/service-portal/faq.do?se=git-service
+[gitlab-ci]: https://gitlab.cern.ch/help/ci/README.md
