@@ -50,3 +50,4 @@
 [cmssw]: https://cms-sw.github.io/index.html
 [snow-git]: https://cern.service-now.com/service-portal/faq.do?se=git-service
 [gitlab-ci]: https://gitlab.cern.ch/help/ci/README.md
+[payload-gitlab-cms]: https://gitlab.cern.ch/awesome-workshop/payload-gitlab-cms
