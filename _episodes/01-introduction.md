@@ -11,7 +11,7 @@ objectives:
 keypoints:
 - "GitLab CVMFS runners are required to use CMSSW."
 - "The setup script sets aliases, which are not expanded by default."
-- "The setup script tries to access unset variables that can cause the CI to fail when using strict shell scripting checks."
+- "If the setup script tries to access unset variables, then that can cause the CI to fail when using strict shell scripting checks."
 ---
 Before getting into details, a few links to useful documentation on GitLab
 CI/CD and also CERN-specific information:
@@ -36,7 +36,7 @@ tags:
 A minimal `.gitlab-ci.yml` file to get a runner with CVMFS looks like the following:
 
 ~~~
-cmssw_setup
+cmssw_setup:
   tags:
     - cvmfs
   script:
@@ -136,7 +136,6 @@ setup command and enabling these checks afterwards again.
 >     # Otherwise cmsrel and cmsenv won't work
 >     - shopt -s expand_aliases
 >     # access CVMFS
->     - ls /cvmfs/cms.cern.ch/
 >     - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
 >     - cmsrel CMSSW_10_6_8_patch1
 >     - cd CMSSW_10_6_8_patch1/src
@@ -145,7 +144,7 @@ setup command and enabling these checks afterwards again.
 > ~~~
 > {: .language-yaml}
 >
-> The `set +u` command isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one `set -u` somewhere else, so it's safer to catch this here.
+> The `set +u` command turns off errors for referencing unset variables. It isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one `set -u` somewhere else, so it's safer to catch this here.
 {: .solution}
 
 You can see some examples in the [payload GitLab repository][payload-gitlab-cms] for this lesson.
