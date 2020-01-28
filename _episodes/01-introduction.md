@@ -11,7 +11,7 @@ objectives:
 keypoints:
 - "GitLab CVMFS runners are required to use CMSSW."
 - "The setup script sets aliases, which are not expanded by default."
-- "The setup script tries to access unset variables that can cause the CI to fail when using strict shell scripting checks."
+- "If the setup script tries to access unset variables, then that can cause the CI to fail when using strict shell scripting checks."
 ---
 Before getting into details, a few links to useful documentation on GitLab
 CI/CD and also CERN-specific information:
