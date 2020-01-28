@@ -144,7 +144,7 @@ setup command and enabling these checks afterwards again.
 > ~~~
 > {: .language-yaml}
 >
-> The `set +u` command isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one `set -u` somewhere else, so it's safer to catch this here.
+> The `set +u` command turns off errors for referencing unset variables. It isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one `set -u` somewhere else, so it's safer to catch this here.
 {: .solution}
 
 You can see some examples in the [payload GitLab repository][payload-gitlab-cms] for this lesson.
