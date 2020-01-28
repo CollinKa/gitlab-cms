@@ -136,7 +136,6 @@ setup command and enabling these checks afterwards again.
 >     # Otherwise cmsrel and cmsenv won't work
 >     - shopt -s expand_aliases
 >     # access CVMFS
->     - ls /cvmfs/cms.cern.ch/
 >     - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
 >     - cmsrel CMSSW_10_6_8_patch1
 >     - cd CMSSW_10_6_8_patch1/src
