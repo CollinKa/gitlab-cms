@@ -36,7 +36,7 @@ tags:
 A minimal `.gitlab-ci.yml` file to get a runner with CVMFS looks like the following:
 
 ~~~
-cmssw_setup
+cmssw_setup:
   tags:
     - cvmfs
   script:
