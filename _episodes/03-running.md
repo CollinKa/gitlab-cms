@@ -14,7 +14,7 @@ keypoints:
 ---
 FIXME
 
-[gitlab-artifacts][GitLab documentation for using artifacts]
+[GitLab documentation for using artifacts][gitlab-artifacts]
 
 {% include links.md %}
 
