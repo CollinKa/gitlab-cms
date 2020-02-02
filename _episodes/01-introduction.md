@@ -1,7 +1,7 @@
 ---
 title: "Setting up a CMSSW environment"
 teaching: 10
-exercises: 5
+exercises: 10
 questions:
 - "Which GitLab runners are needed?"
 - "What's different w.r.t. LXPLUS?"
@@ -83,23 +83,38 @@ The command `source /cvmfs/cms.cern.ch/cmsset_default.sh` sets several
 environment variables, in particular adding `/cvmfs/cms.cern.ch/common` to
 the `${PATH}`. You can check this by running `echo ${PATH}`. Another effect
 of this command is that several aliases are defined, which means that
-executing the alias command effectively executes the original command. The
-most important aliases are in the table below:
+executing the alias command effectively executes the original command.
 
-|-------------+---------------------------------|
-| Alias       | Command                         |
-|-------------+---------------------------------|
-| `cmsenv`    | ``eval `scramv1 runtime -sh` `` |
-| `cmsrel`    | `scramv1 project CMSSW`         |
-|-------------+---------------------------------|
+> ## Printing all set aliases
+> To print all aliases that are set, just run `alias`.
+{: .callout}
+
+> ## Exercise: Determining CMSSW-related aliases
+> What are the actual commands behind `cmsenv` and `cmsrel`?
+{: .challenge}
+
+> ## Solution: Determining CMSSW-related aliases
+> The most important aliases are in the table below:
+>
+> |-------------+---------------------------------|
+> | Alias       | Command                         |
+> |-------------+---------------------------------|
+> | `cmsenv`    | ``eval `scramv1 runtime -sh` `` |
+> | `cmsrel`    | `scramv1 project CMSSW`         |
+> |-------------+---------------------------------|
+>
+> The meaning of `eval`: The args are read and concatenated together into a
+> single command. This command is then read and executed by the shell, and
+> its exit status is returned as the value of `eval`. If there are no args,
+> or only null arguments, `eval` returns 0.
+>
+{: .solution}
 
 Knowing that a command is an alias is important, since `bash` does not
 automatically expand aliases when running non-interactively, which is the
 case when running in GitLab.
 
-> ## Printing all set aliases
-> To print all aliases that are set, just run `alias`.
-{: .callout}
+
 
 In order to make aliases work in the GitLab runners, one needs to explicitely
 enable alias expansion:
