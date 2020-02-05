@@ -14,6 +14,15 @@ keypoints:
 ---
 Now that you know how to get a CMSSW environment, it is time to do something useful with it.
 
+## Compiling code within the repository
+
+For your analysis to be compiled with CMSSW, it needs to reside in the
+workarea's `src` directory, and in there follow the directory structure of
+two subdirectories (e.g. `AnalysisCode/MyAnalysis`) within which there can be
+`src`, `interface`, `plugin` and further directories. Your analysis code
+under version control will usually not contain the CMSSW workarea, but either
+contain the analysis code at the lowest level or maybe collected in one
+directory to disentangle it from your configuration files such as the `.gitlab-ci.yml` file.
 
 ## Adding CMSSW packages
 
