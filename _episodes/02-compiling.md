@@ -22,7 +22,52 @@ two subdirectories (e.g. `AnalysisCode/MyAnalysis`) within which there can be
 `src`, `interface`, `plugin` and further directories. Your analysis code
 under version control will usually not contain the CMSSW workarea, but either
 contain the analysis code at the lowest level or maybe collected in one
-directory to disentangle it from your configuration files such as the `.gitlab-ci.yml` file.
+directory to disentangle it from your configuration files such as the
+`.gitlab-ci.yml` file.
+
+The [payload GitLab repository][payload-gitlab-cms] contains an example
+analysis, which selects pairs of electrons and muons. The analysis code is
+in a directory called `ZPeakAnalysis` within which `plugins` (the C++ code)
+and `test` (the python config) directories reside. The `ZPeakAnalysis` needs
+to be copied into the CMSSW workarea, and it's advisable to use environment
+variables for this purpose:
+
+~~~
+mkdir ${CMSSW_BASE}/src/AnalysisCode
+cp -r "${CI_PROJECT_DIR}/ZPeakAnalysis" "${CMSSW_BASE}/src/AnalysisCode/"
+~~~
+{: .language-bash}
+
+With these two commands we will now be able to extend the `.gitlab-ci.yml`
+file such that we can compile our analysis code in GitLab. To improve the
+readability of the file, the `CMSSW_RELEASE` is defined as a variable:
+
+~~~
+cmssw_compile:
+  tags:
+    - cvmfs
+  variables:
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_10_6_8_patch1
+  script:
+    - shopt -s expand_aliases
+    - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
+    - cmsrel ${CMSSW_RELEASE}
+    - cd ${CMSSW_RELEASE}/src
+    - cmsenv
+    - mkdir -p AnalysisCode
+    - cp -r "${CI_PROJECT_DIR}/ZPeakAnalysis" "${CMSSW_BASE}/src/AnalysisCode/"
+    - scram b
+~~~
+{: language-yaml}
+
+> ## Exercise: Test that compilation works
+>
+> Copy the files from [https://gitlab.cern.ch/awesome-workshop/payload-gitlab-cms/tree/master/ZPeakAnalysis](https://gitlab.cern.ch/awesome-workshop/payload-gitlab-cms/tree/master/ZPeakAnalysis)
+> to your repository and confirm that the code compiles.
+>
+{: .challenge}
+
 
 ## Adding CMSSW packages
 
@@ -105,7 +150,8 @@ cmssw_addpkg:
 The additional two variables that are exported here, `CMSSW_MIRROR` and
 `CMSSW_GIT_REFERENCE` are specific to when developing within the CERN
 network and can speed up interaction with git, in particular faster
-package checkouts.
+package checkouts. Mind, however, that settings these variables is not
+mandatory.
 
 {% include links.md %}
 
