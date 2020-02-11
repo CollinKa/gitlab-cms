@@ -15,8 +15,9 @@ keypoints:
 - "Since artifacts are write-protected, the directory needs to be copied before running CMSSW"
 ---
 
-Being able to set up CMSSW and compiling code in GitLab, the next step is to
-run test jobs to confirm that the code yields the expected results.
+Being able to set up CMSSW and to compile code in GitLab, and knowing how
+to access CMS data, the next step is to run test jobs to confirm that the
+code yields the expected results.
 
 > ## Fair use
 > Please remember that the provided runners are shared among all users, so
@@ -31,7 +32,7 @@ run test jobs to confirm that the code yields the expected results.
 
 In most cases, you will run your tests on centrally produced files. In order
 to be able to access those, you will require a grid proxy valid for the CMS
-virtual organisation (VO).
+virtual organisation (VO) as described in the previous section.
 
 We'll use a single file from the
 [/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM](https://cmsweb.cern.ch/das/request?instance=prod/global&input=file+dataset%3D%2FDYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8%2FRunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1%2FMINIAODSIM) data set: `/store/mc/RunIIFall17MiniAODv2/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/50000/E43E4210-7742-E811-9430-AC1F6B23C96A.root`.
