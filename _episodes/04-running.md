@@ -58,7 +58,7 @@ cd ${CMSSW_BASE}/src/AnalysisCode/ZPeakAnalysis/
 cmsRun test/MyZPeak_cfg.py
 ls -l myZPeak.root
 ~~~
-{. language-bash}
+{: .language-bash}
 
 where the last command just checks that an output file has been created.
 However, imagine that you would like to run test jobs on more than one file
