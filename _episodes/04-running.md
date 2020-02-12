@@ -64,11 +64,95 @@ where the last command just checks that an output file has been created.
 However, imagine that you would like to run test jobs on more than one file
 and to speed things up do this in parallel. This would mean that you would
 have to compile the code *N* times, which is a waste of resources and time.
-Instead, we can pass the compiled code from the compile step to the run step.
+Instead, we can pass the compiled code from the compile step to the run step
+as described below.
 
 ## Using artifacts to compile code only once
 
-[GitLab documentation for using artifacts][gitlab-artifacts]
+[Artifacts][lesson-gitlab-secrets] have been introduced to you as part of the
+[Continuous Integration / Continuous Development (CI/CD) lesson][lesson-gitlab].
+You can find more detailed information in the
+[GitLab documentation for using artifacts][gitlab-artifacts].
+
+> ## Artifacts are write-protected
+> One important thing to note is that artifacts are write-protected. You
+> cannot write into the artifact directory in one of the following steps.
+{: .callout}
+
+For the compiled code to be available in the subsequent steps, the directories
+that should be provided need to be listed explicitely. The `yaml` code from
+the compilation step in
+[episode 2]({{ page.root }}{% link _episodes/02-compiling.md %})
+needs to be extended as follows:
+
+~~~
+artifacts:
+  # artifacts:untracked ignores configuration in the repository’s .gitignore file.
+  untracked: true
+  expire_in: 20 minutes
+  paths:
+    - ${CMSSW_RELEASE}
+~~~
+{: .language-yaml}
+
+As path we use `${CMSSW_RELEASE}`, i.e. the full CMSSW area. Since this area
+is write protected, we need to copy the whole area to a new directory and
+recursively add write permissions again. In the following, this new workarea
+will have to be used:
+
+~~~
+script:
+  # ...
+  - mkdir run
+  - cp -r ${CMSSW_RELEASE} run/
+  - chmod -R +w run/${CMSSW_RELEASE}/
+  - cd run/${CMSSW_RELEASE}/src
+  - cmsenv
+~~~
+{: .language-yaml}
+
+> ## Exercise: Run CMSSW using the artifact from the compile step
+>
+> You should now have all required ingredients to be able to extend the
+> `.gitlab-ci.yml` file such that you can reuse the compiled code in the
+> `cmsRun` step.
+>
+{: .challenge}
+
+> ## Solution: Run CMSSW using the artifact from the compile step
+>
+> A possible implementation could look like this:
+>
+> ~~~
+> cmssw_run:
+>   image:
+>     name: gitlab-registry.cern.ch/clange/cmssw-docker/cc7-cms:latest
+>     entrypoint: [""]
+>   tags:
+>     - cvmfs
+>   variables:
+>     CMS_PATH: /cvmfs/cms.cern.ch
+>     EOS_MGM_URL: "root://eoscms.cern.ch"
+>     CMSSW_RELEASE: CMSSW_10_6_8_patch1
+>   script:
+>     - shopt -s expand_aliases
+>     - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
+>     - mkdir run
+>     - cp -r ${CMSSW_RELEASE} run/
+>     - chmod -R +w run/${CMSSW_RELEASE}/
+>     - cd run/${CMSSW_RELEASE}/src
+>     - cmsenv
+>     - mkdir -p ${HOME}/.globus
+>     - printf $GRID_USERCERT | base64 -d > ${HOME}/.globus/usercert.pem
+>     - printf $GRID_USERKEY | base64 -d > ${HOME}/.globus/userkey.pem
+>     - chmod 400 ${HOME}/.globus/userkey.pem
+>     - echo ${GRID_PASSWORD} | voms-proxy-init --voms cms --pwstdin
+>     - cd AnalysisCode/ZPeakAnalysis/
+>     - cmsRun test/MyZPeak_cfg.py
+>     - ls -l myZPeak.root
+> ~~~
+> {: .language-yaml}
+{: .solution}
 
 {% include links.md %}
 
