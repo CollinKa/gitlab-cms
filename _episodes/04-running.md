@@ -69,7 +69,7 @@ as described below.
 
 ## Using artifacts to compile code only once
 
-[Artifacts][lesson-gitlab-secrets] have been introduced to you as part of the
+[Artifacts][lesson-gitlab-artifacts] have been introduced to you as part of the
 [Continuous Integration / Continuous Development (CI/CD) lesson][lesson-gitlab].
 You can find more detailed information in the
 [GitLab documentation for using artifacts][gitlab-artifacts].
