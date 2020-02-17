@@ -10,7 +10,7 @@ objectives:
 keypoints:
 - "Special care is needed when adding secrets in GitLab"
 - "Passwords and certificates should always be set to `Protected` state"
-- "Certificates need to be base64 encoded for use as secrets"
+- "Certificates need to be `base64`-encoded for use as secrets"
 ---
 
 ## Securely adding passwords and files to GitLab
@@ -68,14 +68,21 @@ decode to yield the same result as the input. The tool of our choice is
 >
 > Copy the output of the `cat ~/.globus/usercert.pem` output above into a
 > text file called `testcert.txt`, and pipe the content of this file to the
-> `base64` command.
+> `base64` command or use it as input file directly (hint: `base64 --help`).
 >
 {: .challenge}
 
 > ## Solution: Encode using `base64`
-> The command should be:
+> The command should be (when piping):
 > ~~~
 > cat testcert.txt | base64
+> ~~~
+> {: .language-bash}
+>
+> or (when using the input file directly - this is better):
+>
+> ~~~
+> base64 -i testcert.txt
 > ~~~
 > {: .language-bash}
 >
@@ -92,7 +99,7 @@ Decoding works by adding the `-d` (Linux) or `-D` (MacOS) flag to the
 as follows:
 
 ~~~
-cat testcert.txt | base64 | base64 -d
+base64 -i testcert.txt | base64 -d
 ~~~
 {: .language-bash}
 
@@ -143,12 +150,22 @@ We will add the following three variables:
 - `GRID_USERCERT`: grid user certificate (`usercert.pem`)
 - `GRID_USERKEY`: grid user key (`userkey.pem`)
 
-You can simply add your grid proxy password in GitLab (**make sure nobody's
-peeking at your screen**). For the two certificates, pipe them to `base64`:
+For safety and to avoid issues with special characters, you should not
+simply add your grid proxy password in GitLab,
+but always encode it using `base64`.
+For your password do the following
+(**make sure nobody's peeking at your screen**):
 
 ~~~
-cat ~/.globus/usercert.pem | base64
-cat ~/.globus/userkey.pem | base64
+printf "mySecr3tP4$$w0rd" | base64
+~~~
+{: .language-bash}
+
+For the two certificates, use them as input to `base64` directly:
+
+~~~
+base64 -i ~/.globus/usercert.pem
+base64 -i cat ~/.globus/userkey.pem
 ~~~
 {: .language-bash}
 
@@ -162,6 +179,18 @@ The `Settings` --> `CI / CD` --> `Variables` section should look like this:
 
 ![CI/CD Variables section with grid secrets added](../fig/variables_gitlab.png)
 
+> ## Better safe than sorry
+> To reduce the risk of leaking your passwords and certificates to others, you should
+> **protect** your master branch, effectively preventing you and others from pushing to
+> it directly and e.g. print your password to the job logs.
+> To do so, go to *Settings* -> *Repository* -> *Protected Branches*. Mind that the
+> option chosen below still puts a lot of trust in your collaborators. With the
+> **Protected** option chosen above for the variables, the variables are then only
+> available to those branches (but still allow Maintainers to push to them):
+>
+> ![Protecting branches to prevent password leaks](../fig/protected_branches.png)
+{: .callout}
+
 ## Using the grid proxy to query DAS
 
 With the grid secrets stored, we can now make use of them. We need to first
@@ -171,10 +200,10 @@ follows:
 
 ~~~
 mkdir -p ${HOME}/.globus
-printf $GRID_USERCERT | base64 -d > ${HOME}/.globus/usercert.pem
-printf $GRID_USERKEY | base64 -d > ${HOME}/.globus/userkey.pem
+printf "${GRID_USERCERT}" | base64 -d > ${HOME}/.globus/usercert.pem
+printf "${GRID_USERKEY}" | base64 -d > ${HOME}/.globus/userkey.pem
 chmod 400 ${HOME}/.globus/userkey.pem
-echo ${GRID_PASSWORD} | voms-proxy-init --voms cms --pwstdin
+printf "${GRID_PASSWORD}" | base64 -d | voms-proxy-init --voms cms --pwstdin
 ~~~
 {: .language-bash}
 
@@ -187,21 +216,22 @@ would result in the following `yaml`:
 
 ~~~
 voms_proxy:
-  stage: getproxy
   image:
     name: gitlab-registry.cern.ch/clange/cmssw-docker/cc7-cms:latest
     entrypoint: [""]
   script:
     - mkdir -p ${HOME}/.globus
-    - printf $GRID_USERCERT | base64 -d > ${HOME}/.globus/usercert.pem
-    - printf $GRID_USERKEY | base64 -d > ${HOME}/.globus/userkey.pem
+    - printf "${GRID_USERCERT}" | base64 -d > ${HOME}/.globus/usercert.pem
+    - printf "${GRID_USERKEY}" | base64 -d > ${HOME}/.globus/userkey.pem
     - chmod 400 ${HOME}/.globus/userkey.pem
-    - echo ${GRID_PASSWORD} | voms-proxy-init --voms cms --pwstdin
+    - printf "${GRID_PASSWORD}" | base64 -d | voms-proxy-init --voms cms --pwstdin
     - voms-proxy-info --all
     - voms-proxy-destroy
 ~~~
 {: .language-yaml}
 
 Confirm that this works for you before moving on to the next section!
+In case of problems, you might need to add `-w 0` to the `base64 -d`
+command (to be confirmed).
 
 {% include links.md %}
