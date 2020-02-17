@@ -20,17 +20,30 @@ For your analysis to be compiled with CMSSW, it needs to reside in the
 workarea's `src` directory, and in there follow the directory structure of
 two subdirectories (e.g. `AnalysisCode/MyAnalysis`) within which there can be
 `src`, `interface`, `plugin` and further directories. Your analysis code
-under version control will usually not contain the CMSSW workarea, but either
-contain the analysis code at the lowest level or maybe collected in one
-directory to disentangle it from your configuration files such as the
+(under version control in GitLab/GitHub) will usually not contain the
+CMSSW workarea. The git repository will either
+contain the analysis code at the lowest level or could be collected in a
+subdirectory to disentangle it from your configuration files such as the
 `.gitlab-ci.yml` file.
 
-The [payload GitLab repository][payload-gitlab-cms] contains an example
-analysis, which selects pairs of electrons and muons. The analysis code is
+We will use an example analysis, which selects pairs of electrons and muons.
+[Download the zip file containing the analysis](../files/ZPeakAnalysis.zip)
+and extract it now. The analysis code is
 in a directory called `ZPeakAnalysis` within which `plugins` (the C++ code)
-and `test` (the python config) directories reside. The `ZPeakAnalysis` needs
+and `test` (the python config) directories reside.
+Add this directory to your repository:
+
+~~~
+# unzip ZPeakAnalysis.zip
+# mv ZPeakAnalysis ~/awesome-gitlab-cms/
+git add ZPeakAnalysis
+git commit -m "Add ZPeakAnalysis"
+~~~
+{: .language-bash}
+
+When trying to compile the code in GitLab, the `ZPeakAnalysis` needs
 to be copied into the CMSSW workarea, and it's advisable to use environment
-variables for this purpose:
+variables for this purpose. This would be achieved like this:
 
 ~~~
 mkdir ${CMSSW_BASE}/src/AnalysisCode
@@ -64,10 +77,10 @@ cmssw_compile:
 > ## Exercise: Test that compilation works
 >
 > Copy the files from [https://gitlab.cern.ch/awesome-workshop/payload-gitlab-cms/tree/master/ZPeakAnalysis](https://gitlab.cern.ch/awesome-workshop/payload-gitlab-cms/tree/master/ZPeakAnalysis)
-> to your repository and confirm that the code compiles.
+> to your repository and confirm that the code compiles by checking that the GitLab Job
+> succeeds.
 >
 {: .challenge}
-
 
 ## Adding CMSSW packages
 

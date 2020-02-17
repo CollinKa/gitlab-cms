@@ -23,8 +23,20 @@ These pages serve as a good entrypoint in case of problems and questions.
 
 > ## Create a new GitLab project to follow along
 > Please [create a new GitLab project][gitlab-newproject] now to follow along.
-> You can for instance call it `awesome-gitlab-cms`.
+> You can for instance call it `awesome-gitlab-cms`. In the following, we will
+> assume that all your work is in a directory called `awesome-workshop` in your
+> home directory and the repository resides therein:
+> `~/awesome-workshop/awesome-gitlab-cms`
 {: .callout}
+
+The commands would look like this (replace `${USER}` by your CERN
+username in case it isn't the same as on your laptop):
+
+~~~
+mkdir -p ~/awesome-workshop
+git clone ssh://git@gitlab.cern.ch:7999/${USER}/awesome-gitlab-cms.git
+~~~
+{: .language-bash}
 
 ## Choosing the correct GitLab runner
 
