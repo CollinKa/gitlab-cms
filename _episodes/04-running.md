@@ -37,7 +37,7 @@ located on EOS, please check the section on
 [private information/access control][lesson-gitlab-secrets]
 from the
 [Continuous Integration / Continuous Development (CI/CD)][lesson-gitlab]
-on how to get a Kerberos token via `kinit`.
+on how to get a Kerberos token via `kinit` (we won't be using this here).
 
 For the analysis example provided in this lessons, we'll use a single file
 from the [/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM](https://cmsweb.cern.ch/das/request?instance=prod/global&input=file+dataset%3D%2FDYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8%2FRunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1%2FMINIAODSIM) data set: `/store/mc/RunIIFall17MiniAODv2/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/50000/E43E4210-7742-E811-9430-AC1F6B23C96A.root`.
@@ -50,7 +50,9 @@ In principle, all we need to do is compile the code as demonstrated in
 [episode 2]({{ page.root }}{% link _episodes/02-compiling.md %}),
 adding the grid proxy as just done in
 [episode 3]({{ page.root }}{% link _episodes/03-vomsproxy.md %}),
-and then execute the `cmsRun` command. Putting this together, the
+and then execute the `cmsRun` command. Mind that do not need the
+`git cms-addpkg PhysicsTools/PatExamples` command here anymore,
+i.e. remove it in the following! Putting this together, the
 additional commands to run would be:
 
 ~~~
@@ -76,7 +78,7 @@ You can find more detailed information in the
 
 > ## Artifacts are write-protected
 > One important thing to note is that artifacts are write-protected. You
-> cannot write into the artifact directory in one of the following steps.
+> cannot write into the artifact directory in any of the following steps.
 {: .callout}
 
 For the compiled code to be available in the subsequent steps, the directories
@@ -146,13 +148,21 @@ script:
 >     - printf $GRID_USERCERT | base64 -d > ${HOME}/.globus/usercert.pem
 >     - printf $GRID_USERKEY | base64 -d > ${HOME}/.globus/userkey.pem
 >     - chmod 400 ${HOME}/.globus/userkey.pem
->     - echo ${GRID_PASSWORD} | voms-proxy-init --voms cms --pwstdin
+>     - printf ${GRID_PASSWORD} | base64 -d | voms-proxy-init --voms cms --pwstdin
 >     - cd AnalysisCode/ZPeakAnalysis/
 >     - cmsRun test/MyZPeak_cfg.py
 >     - ls -l myZPeak.root
 > ~~~
 > {: .language-yaml}
 {: .solution}
+
+> ## Bonus: Store the output ROOT file as artifact
+>
+> It could be useful to store the output ROOT file as an artifact so that you
+> simply download it after job completion. Do you know how to do it?
+> Hint: you need to provide the full path to it.
+>
+{: .testimonial}
 
 {% include links.md %}
 
