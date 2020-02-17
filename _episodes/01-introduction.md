@@ -21,6 +21,11 @@ CI/CD and also CERN-specific information:
 
 These pages serve as a good entrypoint in case of problems and questions.
 
+> ## Create a new GitLab project to follow along
+> Please [create a new GitLab project][gitlab-newproject] now to follow along.
+> You can for instance call it `awesome-gitlab-cms`.
+{: .callout}
+
 ## Choosing the correct GitLab runner
 
 Standard GitLab runners at CERN do not mount CVMFS, which is required for
@@ -53,7 +58,8 @@ GitLab UI one can see the output, and also the `cvmfs` label:
 ## Setting up CMSSW
 
 > ## CMS-specific setup
-> Since the runner doesn't run as your own user, it doesn't have any
+> Since the default user in the runner is not your username and the container doesn't
+> know anything about you in the first place, it doesn't have any
 > CMS-related environment as people registered as CMS members (via the _zh_
 > group on LXPLUS). This means that everything needs to be set up manually.
 {: .callout}
@@ -159,8 +165,13 @@ setup command and enabling these checks afterwards again.
 > ~~~
 > {: .language-yaml}
 >
-> The `set +u` command turns off errors for referencing unset variables. It isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one `set -u` somewhere else, so it's safer to catch this here.
+> The `set +u` command turns off errors for referencing unset variables. It isn't really needed here, since `-u` (i.e. not allowing to use unset variables) isn't set by default, but the script would fail if one used `set -u` somewhere else, so it's safer to catch this here.
 {: .solution}
+
+The reason why in the example above the variable `${CMS_PATH}` is used and not simply
+`/cvmfs/cms.cern.ch` directly is just to mimick the default environment you would get on
+LXPLUS. You can check if this is the case for you as well by running `env | grep CMS_PATH`
+after logging on to LXPLUS.
 
 You can see some examples in the [payload GitLab repository][payload-gitlab-cms] for this lesson.
 
