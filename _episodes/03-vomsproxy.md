@@ -157,10 +157,11 @@ For your password do the following
 (**make sure nobody's peeking at your screen**):
 
 ~~~
-printf "mySecr3tP4$$w0rd" | base64
+printf 'mySecr3tP4$$w0rd' | base64
 ~~~
 {: .language-bash}
 
+Mind the single quotes (`'`) and not double quotes (`"`).
 For the two certificates, use them as input to `base64` directly:
 
 ~~~
