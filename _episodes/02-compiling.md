@@ -35,7 +35,7 @@ Add this directory to your repository:
 
 ~~~
 # unzip ZPeakAnalysis.zip
-# mv ZPeakAnalysis ~/awesome-gitlab-cms/
+# mv ZPeakAnalysis ~/awesome-workshop/awesome-gitlab-cms/
 git add ZPeakAnalysis
 git commit -m "Add ZPeakAnalysis"
 ~~~
