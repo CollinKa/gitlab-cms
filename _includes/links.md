@@ -47,6 +47,7 @@
 [training]: https://carpentries.github.io/instructor-training/
 [workshop-repo]: {{ site.workshop_repo }}
 [yaml]: http://yaml.org/
+[bootcamp-coc]: https://indico.cern.ch/event/854880/page/18570-code-of-conduct
 [cmssw]: https://cms-sw.github.io/index.html
 [snow-git]: https://cern.service-now.com/service-portal/faq.do?se=git-service
 [gitlab-ci]: https://gitlab.cern.ch/help/ci/README.md
