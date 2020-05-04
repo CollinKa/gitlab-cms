@@ -26,7 +26,11 @@ to be stored in GitLab.
 > well as your certificates! They should never be put in any public place.
 > Putting them under version control is risky, since even if you delete them
 > from the `HEAD` of your `master` branch, they will still be in the commit
-> history.
+> history. Furthermore, putting them in a public, or even a private but shared
+> repository, is a violation of grid policy, and could lead to access being
+> revoked for the offending user. Should you accidentally have put sensitive
+> data to a repository, please see the [guide by GitHub][removing-sensitive] to
+> remove them (though the data should still be considered compromised).
 {: .callout}
 
 Please make sure to revisit the section on
@@ -161,7 +165,8 @@ printf 'mySecr3tP4$$w0rd' | base64
 ~~~
 {: .language-bash}
 
-Mind the single quotes (`'`) and not double quotes (`"`).
+Mind the single quotes (`'`) and not double quotes (`"`). If you are on Linux,
+you should `-w 0` to the `base64` command.
 For the two certificates, use them as input to `base64` directly:
 
 ~~~
@@ -192,7 +197,7 @@ The `Settings` --> `CI / CD` --> `Variables` section should look like this:
 > ![Protecting branches to prevent password leaks](../fig/protected_branches.png)
 {: .callout}
 
-## Using the grid proxy to query DAS
+## Using the grid proxy
 
 With the grid secrets stored, we can now make use of them. We need to first
 restore the grid certificate files in the `~/.globus` directly, then run the
@@ -231,8 +236,13 @@ voms_proxy:
 ~~~
 {: .language-yaml}
 
+You could take this further by e.g. performing a DAS query to keep your input files
+up-to-date.
+
 Confirm that this works for you before moving on to the next section!
 In case of problems, you might need to add `-w 0` to the `base64 -d`
-command (to be confirmed).
+command.
 
 {% include links.md %}
+
+[removing-sensitive]: https://help.github.com/en/github/authenticating-to-github/removing-sensitive-data-from-a-repository
