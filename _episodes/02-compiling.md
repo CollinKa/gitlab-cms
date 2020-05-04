@@ -84,6 +84,14 @@ cmssw_compile:
 
 ## Adding CMSSW packages
 
+> ## Always add CMSSW packages before compiling analysis code!
+>
+> Adding CMSSW packages has to happen *before* compiling analysis code in the
+> repository, since `git cms-addpkg` will call `git cms-init` for the
+> `$CMSSW_BASE/src` directory, and `git init` doesn't work if the directory
+> already contains files.
+{: .callout}
+
 Assuming that you would like to check out CMSSW packages using the commands
 described in the [CMSSW FAQ][cmssw-faq], a couple of additional settings need
 to be applied. For instance, try running the following command in GitLab CI
@@ -107,30 +115,16 @@ Please set up your GitHub user name via:
 ~~~
 {: .output}
 
-You will have to set the config as described above to make things work. Alternatively, you can also just create a `.gitconfig` in your repository and use it as described [here][custom-gitconfig].
+There are a couple of options to make things work:
 
-> ## Relevance of settings
-> Since you will probably not want to push changes to GitHub for inclusion
-> from the CI, it doesn't really matter what you set. You can set some
-> arbitrary values, but mind that if you use a username that doesn't exist
-> on GitHub, you will see a warning (here `anonymous` was set):
->
-> ~~~
-> You don't seem to have a GitHub accout, or your GitHub username (anonymous) is not correct.
->  (anonymous) is not correct.
->  You can work locally, but you will not be able to push your changes to > tHub for inclusion
->  in the official CMSSW distribution.
->  You can correct your GitHub user name via:
->      git config --global user.github <your github username>
->  To create a personal repository:
->      visit to https://github.com/ and register a new account
->      visit to https://github.com/cms-sw/cmssw and click on the Fork button
->      select the option to fork the repository under your username (anononymous)
-> ~~~
-> {: .output}
-{: .callout}
+- set the config as described above,
+- alternatively, create a `.gitconfig` in your repository and use it as described [here][custom-gitconfig],
+- run `git cms-init --upstream-only` before `git cms-addpkg` to disable setting up a user remote.
 
-A complete `yaml` fragment that checks out a CMSSW package after having set up CMSSW and then compiles the code looks as follows:
+For simplicity, and since we do not need to commit anything back to CMSSW from
+GitLab, we will use the latter approach.
+A complete `yaml` fragment that checks out a CMSSW package after having set up
+CMSSW and then compiles the code looks as follows:
 
 ~~~
 cmssw_addpkg:
@@ -140,9 +134,6 @@ cmssw_addpkg:
   variables:
     CMS_PATH: /cvmfs/cms.cern.ch
     CMSSW_RELEASE: CMSSW_10_6_8_patch1
-    GIT_USER_NAME: 'Anonymous Nonamious'
-    GIT_USER_EMAIL: anonymous@cern.ch
-    GIT_USER_GITHUB: cmsbot
   script:
     - shopt -s expand_aliases
     - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
@@ -151,19 +142,20 @@ cmssw_addpkg:
     - cmsenv
     # If within CERN, we can speed up interaction with CMSSW:
     - export CMSSW_MIRROR=https://:@git.cern.ch/kerberos/CMSSW.git
+    # This is another trick to speed things up independent of your location:
     - export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
-    - git config --global user.name "${GIT_USER_NAME}"
-    - git config --global user.email "${GIT_USER_EMAIL}"
-    - git config --global user.github "${GIT_USER_GITHUB}"
+    # Important: run git cms-init with --upstream-only flag to not run into
+    # problems with git config
+    - git cms-init --upstream-only
     - git cms-addpkg PhysicsTools/PatExamples
     - scram b
 ~~~
 {: language-yaml}
 
 The additional two variables that are exported here, `CMSSW_MIRROR` and
-`CMSSW_GIT_REFERENCE` are specific to when developing within the CERN
-network and can speed up interaction with git, in particular faster
-package checkouts. Mind, however, that settings these variables is not
+`CMSSW_GIT_REFERENCE` can speed up interaction with git, in particular
+faster package checkouts. Mind that `CMSSW_MIRROR` is specific to when
+developing within the CERN network. Settings these variables is *not*
 mandatory.
 
 {% include links.md %}
