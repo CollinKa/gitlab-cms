@@ -1,6 +1,11 @@
 name: example
 on: push
 jobs:
+    greeting:
+        runs-on: ubuntu-latest
+        steps:
+          - run: echo hello world
+          
     cmssw_setup:
         tags:
             - cvmfs
