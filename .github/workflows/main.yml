@@ -1,0 +1,8 @@
+name: example
+on: push
+
+cmssw_setup:
+    tags:
+      - cvmfs
+    script:
+      - ls /cvmfs/cms.cern.ch/
